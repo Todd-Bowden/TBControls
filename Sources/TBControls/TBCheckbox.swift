@@ -37,11 +37,10 @@ public struct TBCheckbox: View {
                 .frame(width: size, height: size, alignment: .center)
                 .cornerRadius(size * 0.2)
                 .opacity(backgroundOpacity)
-            //if isChecked {
-                Image(systemName: symbol)
-                    .font(Font.system(size: size * 0.6))
-                    .opacity(symbolOpacity)
-            //}
+            
+            Image(systemName: symbol)
+                .font(Font.system(size: size * 0.6))
+                .opacity(symbolOpacity)
         }
         .frame(width: size, height: size, alignment: .center)
         .contentShape(Rectangle())
