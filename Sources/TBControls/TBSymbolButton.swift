@@ -26,7 +26,7 @@ public struct TBSymbolButton: View {
     
     private var backgroundOpacity: CGFloat {
         if press { return 0.3 }
-        if hover { return 0.2 }
+        if hover { return 0.15 }
         return 0
     }
     
