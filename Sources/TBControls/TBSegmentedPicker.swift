@@ -126,7 +126,10 @@ public struct TBSegmentedPicker<S: Hashable, V: View>: View {
                         .offset(x: frame.origin.x, y: frame.origin.y)
                         .frame(width: frame.size.width, height: frame.size.height, alignment: .center)
                         .onTapGesture {
-                            if let tag = tag(view: view) { selection = tag }
+                            if let tag = tag(view: view) {
+                                selection = tag
+                                hover = false
+                            }
                         }
                 }
             }
