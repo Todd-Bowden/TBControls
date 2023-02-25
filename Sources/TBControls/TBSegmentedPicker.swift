@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-public struct TBSegmentedPicker<S: Hashable, V: View>: View {
+public struct TBSegmentedPicker<S: Equatable, V: View>: View {
     
     public enum Orientation {
         case horizontal
