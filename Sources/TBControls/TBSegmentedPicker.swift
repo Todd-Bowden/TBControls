@@ -18,13 +18,22 @@ public struct TBSegmentedPicker<S: Equatable, V: View>: View {
     let orientation: Orientation
     @Binding var selection: S
     let views: [V]
+    let values: [S]?
     @State var hover = false
+    
+    public init(_ orientation: Orientation = .horizontal, selection: Binding<S>, views: [V], values: [S]) {
+        self.orientation = orientation
+        self._selection = selection
+        self.views = views
+        self.values = values
+    }
 
     public init(_ orientation: Orientation = .horizontal, selection: Binding<S>, @ViewBuilder content: () -> TupleView<(V,V)>) {
         self.orientation = orientation
         self._selection = selection
         let v = content().value
         self.views = [v.0, v.1]
+        self.values = nil
     }
     
     public init(_ orientation: Orientation = .horizontal, selection: Binding<S>, @ViewBuilder content: () -> TupleView<(V,V,V)>) {
@@ -32,6 +41,7 @@ public struct TBSegmentedPicker<S: Equatable, V: View>: View {
         self._selection = selection
         let v = content().value
         self.views = [v.0, v.1, v.2]
+        self.values = nil
     }
     
     public init(_ orientation: Orientation = .horizontal, selection: Binding<S>, @ViewBuilder content: () -> TupleView<(V,V,V,V)>) {
@@ -39,6 +49,7 @@ public struct TBSegmentedPicker<S: Equatable, V: View>: View {
         self._selection = selection
         let v = content().value
         self.views = [v.0, v.1, v.2, v.3]
+        self.values = nil
     }
     
     public init(_ orientation: Orientation = .horizontal, selection: Binding<S>, @ViewBuilder content: () -> TupleView<(V,V,V,V,V)>) {
@@ -46,6 +57,7 @@ public struct TBSegmentedPicker<S: Equatable, V: View>: View {
         self._selection = selection
         let v = content().value
         self.views = [v.0, v.1, v.2, v.3, v.4]
+        self.values = nil
     }
     
     public init(_ orientation: Orientation = .horizontal, selection: Binding<S>, @ViewBuilder content: () -> TupleView<(V,V,V,V,V,V)>) {
@@ -53,6 +65,7 @@ public struct TBSegmentedPicker<S: Equatable, V: View>: View {
         self._selection = selection
         let v = content().value
         self.views = [v.0, v.1, v.2, v.3, v.4, v.5]
+        self.values = nil
     }
     
     public init(_ orientation: Orientation = .horizontal, selection: Binding<S>, @ViewBuilder content: () -> TupleView<(V,V,V,V,V,V,V)>) {
@@ -60,6 +73,7 @@ public struct TBSegmentedPicker<S: Equatable, V: View>: View {
         self._selection = selection
         let v = content().value
         self.views = [v.0, v.1, v.2, v.3, v.4, v.5, v.6]
+        self.values = nil
     }
     
     private func frame(index: Int, size: CGSize) -> CGRect {
@@ -83,12 +97,29 @@ public struct TBSegmentedPicker<S: Equatable, V: View>: View {
     }
     
     private func selectedIndex() -> Int? {
+        if let values {
+            return values.firstIndex(of: selection)
+        }
         for i in 0..<views.count {
             if tag(view: views[i]) == selection {
                 return i
             }
         }
         return nil
+    }
+    
+    private func value(index: Int) -> S? {
+        guard let values else { return nil }
+        guard index < values.count else { return nil }
+        return values[index]
+    }
+    
+    private func value(view: V, index: Int) -> S? {
+        if values != nil {
+            return value(index: index)
+        } else {
+            return tag(view: view)
+        }
     }
     
     private func tag(view: V) -> S? {
@@ -126,8 +157,8 @@ public struct TBSegmentedPicker<S: Equatable, V: View>: View {
                         .offset(x: frame.origin.x, y: frame.origin.y)
                         .frame(width: frame.size.width, height: frame.size.height, alignment: .center)
                         .onTapGesture {
-                            if let tag = tag(view: view) {
-                                selection = tag
+                            if let value = value(view: view, index: i) {
+                                selection = value
                                 hover = false
                             }
                         }
