@@ -8,20 +8,28 @@ import SwiftUI
 public struct TBSymbolButton: View {
 
     let symbol: String
+    let fontSize: CGFloat
     let offset: CGSize
     let action: () -> Void
     
     @State var hover = false
     @State var press = false
     
-    public init(_ symbol: String, offset: CGSize = CGSize.zero, action: @escaping () -> Void) {
+    public init(_ symbol: String, fontSize: CGFloat = 0.6, offset: CGSize = CGSize.zero, action: @escaping () -> Void) {
         self.symbol = symbol
+        self.fontSize = fontSize
         self.offset = offset
         self.action = action
     }
     
     private func smallerDimension(size: CGSize) -> CGFloat {
         size.height < size.width ? size.height : size.width
+    }
+    
+    private func fontSize(size: CGSize) -> CGFloat {
+        if fontSize > 1 { return fontSize }
+        if fontSize < 0 { return 0 }
+        return smallerDimension(size: size) * fontSize
     }
     
     private var backgroundOpacity: CGFloat {
@@ -38,7 +46,7 @@ public struct TBSymbolButton: View {
                     .frame(width: g.size.width, height: g.size.height)
                     .opacity(backgroundOpacity)
                 Image(systemName: symbol)
-                    .font(.system(size: smallerDimension(size: g.size) * 0.6))
+                    .font(.system(size: fontSize(size: g.size)))
                     .opacity(press ? 1 : 0.7)
                     .offset(offset)
             }
